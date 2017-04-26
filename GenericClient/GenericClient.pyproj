@@ -31,6 +31,7 @@
     <Compile Include="RESTClient.py">
       <SubType>Code</SubType>
     </Compile>
+    <Content Include="config.xmind" />
     <Content Include="testconfigurations\Flowdoc-SendMessage.yaml" />
     <Content Include="testconfigurations\Flowdoc-UpdateFlow.yaml" />
     <Content Include="testconfigurations\Flowdoc-GetOrganizations.yaml" />

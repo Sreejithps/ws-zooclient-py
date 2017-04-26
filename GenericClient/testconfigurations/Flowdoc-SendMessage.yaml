@@ -8,8 +8,9 @@ endpoint:
 #method get, post, put, delete
     method: post
 #headers
-headers:
-    Content-Type: application/json
+    headers:
+        Content-Type: application/json
+        X-flowdock-wait-for-message: 1
 #input paramaters
 inputmap:
     organization:

@@ -24,8 +24,10 @@ class RESTClient(metaclass=GenericClientABC):
             raise Exception('Invalid http method')
         #validate parameters
         #start with 
-        if self.settings['authenticationscheme'] == 'apikey' and self.params['apikey'] == None:
-            raise Exception('API Key not provided') 
+        if self.settings['authenticationscheme'] == 'apikey':
+            apikeykeyinparams = self.settings['authentication']['apikey']['source']
+            if self.params[apikeykeyinparams] == None:
+                raise Exception('API Key not provided') 
         #TODO validate other authentication schemes
 
 
@@ -77,17 +79,18 @@ class RESTClient(metaclass=GenericClientABC):
             #process authentication scheme
             apikey = None
             if str(self.settings['authenticationscheme']).lower() == 'apikey':
+                apikeykeyinparams = self.settings['authentication']['apikey']['source']
                 #check if we need to encode
                 if str(self.settings['authentication']['apikey']['encode']).lower() == 'true':
                     #switch on encoding scheme
                     if str(self.settings['authentication']['apikey']['encodingscheme']).lower() == 'base64':
-                        apikey = base64.b64encode(self.params['apikey'].encode()).decode('ascii')
-                    elif str(self.settings['authentication']['apikey']['encodingscheme']).lower() == 'urlencode':
-                        apikey = quote(self.params['apikey'])
+                        apikey = base64.b64encode(self.params[apikeykeyinparams].encode()).decode('ascii')
+                    elif str(self.settings['authentication'][apikeykeyinparams]['encodingscheme']).lower() == 'urlencode':
+                        apikey = quote(self.params[apikeykeyinparams])
                     else:
                         raise Exception('Unknown encoding scheme for APIKEY')
                 elif str(self.settings['authentication']['apikey']['encode']).lower() == 'false':
-                    apikey = self.params['apikey']
+                    apikey = self.params[apikeykeyinparams]
                 else:
                     raise Exception('Unknown encoding swtich for APIKEY')
 
@@ -111,9 +114,9 @@ class RESTClient(metaclass=GenericClientABC):
                 body = json.dumps(jsondictbody)
 
             #add heades
-            if 'headers' in self.settings:
-                for header in self.settings['headers']:
-                    headers[header] = self.settings['headers'][header]
+            if 'headers' in self.settings['endpoint']:
+                for header in self.settings['endpoint']['headers']:
+                    headers[header] = self.settings['endpoint']['headers'][header]
 
             response = httpconnpool.urlopen(self.settings['endpoint']['method'].upper(),  url, headers=headers, body=body)
             if response.status < 200 or response.status > 299:

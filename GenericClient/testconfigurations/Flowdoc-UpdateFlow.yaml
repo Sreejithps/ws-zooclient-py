@@ -8,8 +8,8 @@ endpoint:
 #method get, post, put, delete
     method: put
 #headers
-headers:
-    Content-Type: application/json
+    headers:
+        Content-Type: application/json
 #input paramaters
 inputmap:
     organization:
