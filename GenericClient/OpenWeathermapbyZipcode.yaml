@@ -1,0 +1,35 @@
+#web services configuration file
+description: 'Call current weather data for one location by city name'
+provider: http://openweathermap.org
+endpoint:
+    url: http://api.openweathermap.org/data/2.5/weather?mode=json
+#rest, soap
+    type: rest
+#method get, post, put, delete
+    method: get
+#authentication scheme: none, apikey, username/password
+authenticationscheme: apikey
+#apikey usage
+authentication:
+    apikey:
+#querystring, header
+        target: querystring
+        querystring: APPID
+#input paramaters
+inputmap:
+    zipcode:
+#target:querystring, header
+        target: querystring
+        querystring: zip               
+#output configuration
+outputmap:
+    temperature:
+        required: true
+        source: body
+        type: json
+        value: $.main.temp
+    pressure:
+        required: true
+        source: body
+        type: json
+        value: $.main.pressure

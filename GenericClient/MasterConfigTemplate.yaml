@@ -1,0 +1,57 @@
+#web services configuration file
+description: 'Call current weather data for one location by city name'
+provider: https://www.flowdock.com
+endpoint:
+    url: https://api.flowdock.com/flows/{organization}
+#headers
+headers:
+    Content-Type: application/json
+#rest, soap
+    type: rest
+#method get, post, put, delete
+    method: get
+#authentication scheme: none, apikey, username/password
+authenticationscheme: apikey
+#apikey usage
+authentication:
+    apikey:
+#querystring, header
+        source: apikey
+        encode: true
+        encodingscheme: base64 #can be base64 or urlencode               
+#taget can be query string or header.  Acutal data to be put in can be formatted using {}
+        target: querystring
+        querystring: APPID
+        value: {} 
+#API parameters
+params:
+    apikey:
+
+#input paramaters
+inputmap:
+    city:
+#target:querystring, header
+        target: querystring #can be query string, URL, body
+        querystring: q      #query string name
+        encode: true
+        encodingscheme: base64  #can be base64 or urlencode  
+        urlpart: organization
+    flowname:
+        target: body
+        format: jsondict
+        key: name
+#output configuration
+outputmap:
+#name of the output variable
+    id:
+#transformations to be done 
+        transform: none #direct extract
+        source: body    #source - header or body
+        type: json      #data format, json/xml
+        value: $[*].id  #jsonpath or xpath
+    clickable_link: 
+        transform: strfmt   #formatte string with one or more values
+        source: body        #source, body or header
+        type: json          #data format json or xml
+        format: <a href='{}'>{}</a> #format string
+        value: ['$[*].name', '$[*].web_url']    #args for formatstring 

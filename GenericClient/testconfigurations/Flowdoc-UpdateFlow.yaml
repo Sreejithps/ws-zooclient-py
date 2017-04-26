@@ -1,0 +1,65 @@
+#web services configuration file
+description: 'Call current weather data for one location by city name'
+provider: https://www.flowdock.com
+endpoint:
+    url: https://api.flowdock.com/flows/__organization__/__flow__
+#rest, soap
+    type: rest
+#method get, post, put, delete
+    method: put
+#headers
+headers:
+    Content-Type: application/json
+#input paramaters
+inputmap:
+    organization:
+#target:querystring, header, body, url
+        target: url
+        encode: true
+        encodingscheme: urlencode
+        urlpart: __organization__
+    oldflowname:
+        target: url
+        encode: true
+        encodingscheme: urlencode
+        urlpart: __flow__
+    newflowname:
+        target: body
+        format: jsondict
+        key: name             
+    disabled:
+        target: body
+        format: jsondict
+        key: disabled
+#authentication scheme: none, apikey, username/password
+authenticationscheme: apikey
+#apikey usage
+authentication:
+    apikey:
+#querystring, header
+        source: apikey
+        encode: true
+        encodingscheme: base64
+#taget can be query string or header
+        target: header
+        header: Authorization
+        value: Basic {}
+#API parameters
+params:
+    apikey:
+#target:querystring, header
+        target: querystring
+        querystring: q
+#output configuration
+outputmap:
+    id:
+        transform: none
+        source: body
+        type: json
+        value: $.id
+    parameterized_name: 
+        transform: strfmt
+        source: body
+        type: json
+        format: '{}'
+        value: ['$.parameterized_name']
