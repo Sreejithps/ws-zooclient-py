@@ -38,6 +38,7 @@ inputmap:
         encode: true
         encodingscheme: base64  #can be base64 or urlencode  
         urlpart: organization
+        default: 
     flowname:
         target: body
         format: jsondict

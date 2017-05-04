@@ -2,14 +2,15 @@
 description: 'Call current weather data for one location by city name'
 provider: https://www.flowdock.com
 endpoint:
-    url: https://api.flowdock.com/flows/__organization__
+    url: https://api.flowdock.com/flows/__organization__/__flow__/messages
 #rest, soap
     type: rest
 #method get, post, put, delete
-    method: post
+    method: get
 #headers
     headers:
         Content-Type: application/json
+        X-flowdock-wait-for-message: 1
 #input paramaters
 inputmap:
     organization:
@@ -19,22 +20,39 @@ inputmap:
         encodingscheme: urlencode
         urlpart: __organization__
     flowname:
+        target: url
+        encode: true
+        encodingscheme: urlencode
+        urlpart: __flow__
+    event:
         target: body
         format: jsondict
-        key: name             
+        key: event  
+        default: message           
+    limit:
+        target: body
+        format: jsondict
+        key: limit
+        default: 1
+    sort:
+        target: body
+        format: jsondict
+        key: sort
+        default: desc
 #authentication scheme: none, apikey, username/password
 authenticationscheme: apikey
 #apikey usage
 authentication:
-    apikey:
+    keys:
+        apikey:
 #querystring, header
-        source: apikey
-        encode: true
-        encodingscheme: base64
+            source: apikey
+            encode: true
+            encodingscheme: base64
 #taget can be query string or header
-        target: header
-        header: Authorization
-        value: Basic {}
+            target: header
+            header: Authorization
+            value: Basic {}
 #API parameters
 params:
     apikey:
@@ -47,10 +65,4 @@ outputmap:
         transform: none
         source: body
         type: json
-        value: $.id
-    parameterized_name: 
-        transform: strfmt
-        source: body
-        type: json
-        format: '{}'
-        value: ['$.parameterized_name']
+        value: $[*].id

@@ -1,0 +1,55 @@
+#web services configuration file
+description: 'Search for Foursquare venue'
+provider: https://www.googleapis.com
+providerapiversion: 20170101
+version: 'cb45c0ca-2b10-11e7-b154-d8fc93e70d32'
+endpoint:
+    url: https://api.foursquare.com/v2/venues/search?v=20170101
+#rest, soap
+    type: rest
+#method get, post, put, delete
+    method: get
+#input paramaters
+inputmap:
+    locationname:
+#target:querystring, header, body, url
+        target: querystring
+        encode: true
+        encodingscheme: urlencode
+        querystring: near
+    limit:
+        target: querystring
+        encode: false
+        default: 50
+        querystring: limit
+#authentication scheme: none, apikey, username/password
+authenticationscheme: apikey
+#apikey usage
+authentication:
+    keys:
+        clientid:
+#querystring, header
+            source: clientid
+            target: querystring
+            encode: false
+            querystring: client_id
+            value: {}
+        clientsecret:
+#querystring, header
+            source: clientsecret
+            target: querystring
+            encode: false
+            querystring: client_secret
+            value: {}
+#API parameters
+params:
+#output configuration
+    clientid:
+    clientsecret:
+outputmap:
+    venue:
+        transform: strfmt
+        source: body
+        type: json
+        format: '{} ({})'
+        value: ['$.response.venues[*].name' , '$.response.venues[*].contact.formattedPhone']

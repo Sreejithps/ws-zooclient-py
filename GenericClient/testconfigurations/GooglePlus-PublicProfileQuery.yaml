@@ -1,47 +1,42 @@
 #web services configuration file
 description: 'Call current weather data for one location by city name'
-provider: http://openweathermap.org
+provider: https://www.googleapis.com
+providerapiversion: v1
+version: 'cb45c0ca-2b10-11e7-b154-d8fc93e70d32'
 endpoint:
-    url: http://api.openweathermap.org/data/2.5/weather?mode=json
+    url: https://www.googleapis.com/plus/v1/people
 #rest, soap
     type: rest
 #method get, post, put, delete
     method: get
+#input paramaters
+inputmap:
+    query:
+#target:querystring, header, body, url
+        target: querystring
+        encode: true
+        encodingscheme: urlencode
+        querystring: query
 #authentication scheme: none, apikey, username/password
 authenticationscheme: apikey
 #apikey usage
 authentication:
     keys:
-#api key based
         apikey:
 #querystring, header
             source: apikey
             target: querystring
             encode: false
-            querystring: APPID
+            querystring: key
             value: {}
-
 #API parameters
 params:
-    apikey:
-
-#input paramaters
-inputmap:
-    city:
-#target:querystring, header
-        target: querystring
-        encode: true
-        encodingscheme: urlencode
-        querystring: q               
 #output configuration
+    apikey:
 outputmap:
-    temperature:
-        transform: none 
+    profile:
+        transform: strfmt
         source: body
         type: json
-        value: $.main.temp
-    pressure:
-        transform: none 
-        source: body
-        type: json
-        value: $.main.pressure
+        format: '{} link to image {}'
+        value: ['$.items[*].displayName' , '$.items[*].image.url']

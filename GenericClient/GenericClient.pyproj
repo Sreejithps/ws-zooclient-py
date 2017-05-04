@@ -32,10 +32,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="config.xmind" />
+    <Content Include="testconfigurations\Flowdoc-GetLatestMessage.yaml" />
     <Content Include="testconfigurations\Flowdoc-SendMessage.yaml" />
     <Content Include="testconfigurations\Flowdoc-UpdateFlow.yaml" />
     <Content Include="testconfigurations\Flowdoc-GetOrganizations.yaml" />
-    <Content Include="testconfigurations\Flowdoc-CreateFlow.yaml" />
+    <Content Include="testconfigurations\FourSquare-VenueSearch.yaml" />
+    <Content Include="testconfigurations\GooglePlus-PublicProfileQuery.yaml" />
+    <Content Include="testconfigurations\GoogleBooks-GenericQuery.yaml" />
     <Content Include="testconfigurations\Flowdoc-GetFlowsbyID.yaml" />
     <Content Include="MasterConfigTemplate.yaml" />
     <Content Include="testconfigurations\Flowdoc-GetFlows.yaml" />

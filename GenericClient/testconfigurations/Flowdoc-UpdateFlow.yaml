@@ -46,10 +46,11 @@ authentication:
         value: Basic {}
 #API parameters
 params:
-    apikey:
+    keys:
+        apikey:
 #target:querystring, header
-        target: querystring
-        querystring: q
+            target: querystring
+            querystring: q
 #output configuration
 outputmap:
     id:

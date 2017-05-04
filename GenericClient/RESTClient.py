@@ -22,13 +22,6 @@ class RESTClient(metaclass=GenericClientABC):
             raise Exception('Invalid end point URL')
         if settings['endpoint']['method'] not in ['get', 'post', 'put']:
             raise Exception('Invalid http method')
-        #validate parameters
-        #start with 
-        if self.settings['authenticationscheme'] == 'apikey':
-            apikeykeyinparams = self.settings['authentication']['apikey']['source']
-            if self.params[apikeykeyinparams] == None:
-                raise Exception('API Key not provided') 
-        #TODO validate other authentication schemes
 
 
     def ProcessRequest(self, inputcontext):
@@ -45,18 +38,29 @@ class RESTClient(metaclass=GenericClientABC):
             url = self.settings['endpoint']['url']
             if 'inputmap' in self.settings:
                 for input in self.settings['inputmap']:
-                    inputvalue = inputcontext[input]
+                    #check if input value is present
+                    defaultinputvalue = None
+                    if 'default' in self.settings['inputmap'][input]:
+                        defaultinputvalue = self.settings['inputmap'][input]['default']
+
+                    if (input not in inputcontext or inputcontext[input] == None) and defaultinputvalue == None:
+                        raise Exception('Input not provided for {} input'.format(input))
+                    if input in inputcontext and inputcontext[input] != None:
+                        inputvalue = inputcontext[input]
+                    else:
+                        inputvalue = defaultinputvalue
                     if 'encode' in self.settings['inputmap'][input]:
                         if str(self.settings['inputmap'][input]['encode']).lower() == 'true':
                             #switch on encoding scheme
                             if str(self.settings['inputmap'][input]['encodingscheme']).lower() == 'base64':
                                 inputvalue = base64.b64encode(inputcontext[input].encode()).decode('ascii')
                             elif str(self.settings['inputmap'][input]['encodingscheme']).lower() == 'urlencode':
-                                inputvalue = quote(inputcontext[input])
+                                if str(self.settings['inputmap'][input]['target']).lower() != 'querystring':
+                                    inputvalue = quote(inputcontext[input])
                             else:
                                 raise Exception('Unknown encoding scheme for {} input'.format(input))
-                        elif str(self.settings['authentication']['apikey']['encode']).lower() == 'false':
-                            inputvalue = inputcontext[input]
+                        elif str(self.settings['inputmap'][input]['encode']).lower() == 'false':
+                            pass
                         else:
                             raise Exception('Unknown encoding switch for {} input'.format(input))
 
@@ -79,28 +83,30 @@ class RESTClient(metaclass=GenericClientABC):
             #process authentication scheme
             apikey = None
             if str(self.settings['authenticationscheme']).lower() == 'apikey':
-                apikeykeyinparams = self.settings['authentication']['apikey']['source']
+                #just loop through all keys and assign them to targets
+                for key in self.settings['authentication']['keys']:
+                    apikeykeyinparams = self.settings['authentication']['keys'][key]['source']
                 #check if we need to encode
-                if str(self.settings['authentication']['apikey']['encode']).lower() == 'true':
-                    #switch on encoding scheme
-                    if str(self.settings['authentication']['apikey']['encodingscheme']).lower() == 'base64':
-                        apikey = base64.b64encode(self.params[apikeykeyinparams].encode()).decode('ascii')
-                    elif str(self.settings['authentication'][apikeykeyinparams]['encodingscheme']).lower() == 'urlencode':
-                        apikey = quote(self.params[apikeykeyinparams])
+                    if str(self.settings['authentication']['keys'][key]['encode']).lower() == 'true':
+                        #switch on encoding scheme
+                        if str(self.settings['authentication']['keys'][key]['encodingscheme']).lower() == 'base64':
+                            apikey = base64.b64encode(self.params[apikeykeyinparams].encode()).decode('ascii')
+                        elif str(self.settings['authentication']['keys'][key]['encodingscheme']).lower() == 'urlencode':
+                            apikey = quote(self.params[apikeykeyinparams])
+                        else:
+                            raise Exception('Unknown encoding scheme for APIKEY')
+                    elif str(self.settings['authentication']['keys'][key]['encode']).lower() == 'false':
+                        apikey = self.params[apikeykeyinparams]
                     else:
-                        raise Exception('Unknown encoding scheme for APIKEY')
-                elif str(self.settings['authentication']['apikey']['encode']).lower() == 'false':
-                    apikey = self.params[apikeykeyinparams]
-                else:
-                    raise Exception('Unknown encoding swtich for APIKEY')
+                        raise Exception('Unknown encoding swtich for APIKEY')
 
             
-                if str(self.settings['authentication']['apikey']['target']).lower() == 'querystring':
-                    querystring[self.settings['authentication']['apikey']['querystring']] = str(self.settings['authentication']['apikey']['value']).format(apikey)
-                elif str(self.settings['authentication']['apikey']['target']).lower() == 'header':
-                    headers[self.settings['authentication']['apikey']['header']] = str(self.settings['authentication']['apikey']['value']).format(apikey)
-                else:
-                    raise Exception('Unknown target for APIKEY')
+                    if str(self.settings['authentication']['keys'][key]['target']).lower() == 'querystring':
+                        querystring[self.settings['authentication']['keys'][key]['querystring']] = str(self.settings['authentication']['keys'][key]['value']).format(apikey)
+                    elif str(self.settings['authentication']['keys'][key]['target']).lower() == 'header':
+                        headers[self.settings['authentication']['keys'][key]['header']] = str(self.settings['authentication']['keys'][key]['value']).format(apikey)
+                    else:
+                        raise Exception('Unknown target for APIKEY')
 
             encodedquerystring = ''
             if len(querystring) > 0:

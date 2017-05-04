@@ -36,15 +36,16 @@ inputmap:
 authenticationscheme: apikey
 #apikey usage
 authentication:
-    apikey:
+    keys:
+        apikey:
 #querystring, header
-        source: apikey
-        encode: true
-        encodingscheme: base64
+            source: apikey
+            encode: true
+            encodingscheme: base64
 #taget can be query string or header
-        target: header
-        header: Authorization
-        value: Basic {}
+            target: header
+            header: Authorization
+            value: Basic {}
 #API parameters
 params:
     apikey:

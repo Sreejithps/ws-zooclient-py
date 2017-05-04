@@ -1,0 +1,50 @@
+#web services configuration file
+description: 'Call current weather data for one location by city name'
+provider: https://www.googleapis.com/books
+providerapiversion: v1
+version: 'cb45c0ca-2b10-11e7-b154-d8fc93e70d32'
+endpoint:
+    url: https://www.googleapis.com/books/v1/volumes
+#rest, soap
+    type: rest
+#method get, post, put, delete
+    method: get
+#headers
+    headers:
+        Content-Type: application/json
+#input paramaters
+inputmap:
+    query:
+#target:querystring, header, body, url
+        target: querystring
+        encode: true
+        encodingscheme: urlencode
+        querystring: q
+    maxresults:
+        target: querystring
+        encode: false
+        querystring: maxResults
+        default: 1
+#authentication scheme: none, apikey, username/password
+authenticationscheme: apikey
+#apikey usage
+authentication:
+    keys:
+        apikey:
+#querystring, header
+            source: apikey
+            target: querystring
+            encode: false
+            querystring: key
+            value: {}
+#API parameters
+params:
+    apikey:
+#output configuration
+outputmap:
+    titleauthor:
+        transform: strfmt
+        source: body
+        type: json
+        format: '{} by {}'
+        value: ['$.items[*].volumeInfo.title', '$.items[*].volumeInfo.authors[0]']
