@@ -124,7 +124,7 @@ class RESTClient(metaclass=GenericClientABC):
                 for header in self.settings['endpoint']['headers']:
                     headers[header] = self.settings['endpoint']['headers'][header]
 
-            response = httpconnpool.urlopen(self.settings['endpoint']['method'].upper(),  url, headers=headers, body=body)
+            response = httpconnpool.urlopen(self.settings['endpoint']['method'].upper(), url, headers=headers, body=body)
             if response.status < 200 or response.status > 299:
                 return outputcontext
 

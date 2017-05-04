@@ -32,6 +32,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="config.xmind" />
+    <Content Include="testconfigurations\Flowdoc-CreateFlow.yaml" />
     <Content Include="testconfigurations\Flowdoc-GetLatestMessage.yaml" />
     <Content Include="testconfigurations\Flowdoc-SendMessage.yaml" />
     <Content Include="testconfigurations\Flowdoc-UpdateFlow.yaml" />
