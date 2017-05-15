@@ -6,29 +6,29 @@ from urllib.parse import urlencode, quote
 from jsonpath_rw import jsonpath, parse
 import base64
 import pandas as pd
+import os
 
 #httpconnpool = urllib3.PoolManager(num_pools=10, maxsize=30, block=True, timeout = 20.0)
 httpconnpool = urllib3.ProxyManager('http://proxy-idp01.ind.hp.com:8080', num_pools=10, maxsize=30, block=True, timeout = 20.0)
 
-class RESTClient(metaclass=GenericClientABC):
+class GenericWSClient(metaclass=GenericClientABC):
     """Paramter driven REST client implementation"""
-    def __init__(self, settingsfile, params):
-        with open(settingsfile) as settingsfile:
-            settings = yaml.safe_load(settingsfile)
+    def __init__(self, settingsdata, params=None):
+        if os.path.isfile(settingsdata) == True:
+            with open(settingsdata) as settingsfile:
+                settings = yaml.safe_load(settingsfile)
+        else:
+            settings = yaml.safe_load(settingsdata)
         self.settings = settings
         self.params = params
         #validate settings
         if settings['endpoint']['url'] == None or len(settings['endpoint']['url']) == 0:
             raise Exception('Invalid end point URL')
-        if settings['endpoint']['method'] not in ['get', 'post', 'put']:
+        if settings['endpoint']['method'] not in ['get', 'post', 'put','head', 'delete', 'options']:
             raise Exception('Invalid http method')
 
-
-    def ProcessRequest(self, inputcontext):
+    def processrequest(self, inputcontext):
         outputcontext = {}
-        #copy input context to output context
-        outputcontext = inputcontext.copy()
-
         try:
             #process input paramteters
             #query string first
@@ -168,18 +168,46 @@ class RESTClient(metaclass=GenericClientABC):
             return outputcontext
 
 
-    def GetInputs(self):
+    def getinputs(self):
         inputs = {}
         try:
-            inputs = self.settings['inputmap'].keys()            
+            for inputparam in self.settings['inputmap']:
+                if 'default' not in self.settings['inputmap'][inputparam]:
+                    defaultvalue = None
+                else:
+                    defaultvalue = self.settings['inputmap'][inputparam]['default']
+                inputs[inputparam] = {'description': self.settings['inputmap'][inputparam]['description'] if 'description' in self.settings['inputmap'][inputparam] else None, 'default': defaultvalue}
         except Exception as e:
             pass
         return inputs
 
-    def GetParams(self):
+    def getoutputs(self):
+        outputs = {}
+        try:
+            for outputparam in self.settings['outputmap']:
+                outputs[outputparam] = {'description': self.settings['outputmap'][outputparam]['description'] if 'description' in self.settings['outputmap'][outputparam] else None}
+        except Exception as e:
+            pass
+        return outputs
+
+
+    def getparams(self):
         params = {}
         try:
-            params = self.settings['params'].keys()
+            for apiparam in self.settings['params']:
+                params[apiparam] = {'description': self.settings['params'][apiparam]['description'] if 'description' in self.settings['params'][apiparam] else None}
         except Exception as e:
             pass
         return params
+
+    def setparams(self, params):
+        self.params = params
+
+    def getservicedesription(self):
+        description = ''
+        try:
+            description = self.settings['description'] if 'description' in self.settings else None
+        except Exception as e:
+            pass
+        return description
+

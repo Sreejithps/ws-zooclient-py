@@ -4,11 +4,22 @@ from abc import ABCMeta, abstractmethod
 class GenericClientABC(ABCMeta):
     """abstract class for web service invoker"""
     @abstractmethod
-    def ProcessRequest(self, inputcontext, params):
+    def processrequest(self, inputcontext, params):
         pass
     
     @abstractmethod
-    def GetInputs(self):
+    def getinputs(self):
         pass    
 
+    @abstractmethod
+    def getparams(self):
+        pass    
+
+    @abstractmethod
+    def setparams(self):
+        pass    
+
+    @abstractmethod
+    def getservicedesription(self):
+        pass    
     

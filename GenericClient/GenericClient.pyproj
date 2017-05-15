@@ -28,32 +28,14 @@
     <Compile Include="GenericClientABC.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RESTClient.py">
+    <Compile Include="GenericWSClient.py">
       <SubType>Code</SubType>
     </Compile>
-    <Content Include="config.xmind" />
-    <Content Include="testconfigurations\Flowdoc-CreateFlow.yaml" />
-    <Content Include="testconfigurations\Flowdoc-GetLatestMessage.yaml" />
-    <Content Include="testconfigurations\Flowdoc-SendMessage.yaml" />
-    <Content Include="testconfigurations\Flowdoc-UpdateFlow.yaml" />
-    <Content Include="testconfigurations\Flowdoc-GetOrganizations.yaml" />
-    <Content Include="testconfigurations\FourSquare-VenueSearch.yaml" />
-    <Content Include="testconfigurations\GooglePlus-PublicProfileQuery.yaml" />
-    <Content Include="testconfigurations\GoogleBooks-GenericQuery.yaml" />
-    <Content Include="testconfigurations\Flowdoc-GetFlowsbyID.yaml" />
     <Content Include="MasterConfigTemplate.yaml" />
-    <Content Include="testconfigurations\Flowdoc-GetFlows.yaml" />
-    <Content Include="testconfigurations\OpenWeathermapbyCityName.yaml">
-      <SubType>Code</SubType>
-      <Publish>True</Publish>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\2.7" />
     <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\3.5" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="testconfigurations\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
